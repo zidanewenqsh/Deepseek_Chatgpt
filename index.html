@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AI Chat</title>
+    <!-- 添加 KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <!-- 添加 KaTeX JS -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <!-- 添加 auto-render 扩展，用于自动渲染页面中的数学公式 -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 添加 highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/vs2015.min.css">
+
+    <!-- 添加 highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- 添加常用语言包 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+
+    <script>
+        // 添加在其他脚本的最前面
+        // 阻止浏览器默认的 Ctrl + 滚轮缩放行为
+        document.addEventListener('wheel', function (e) {
+            if (e.ctrlKey) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // 配置 marked 以处理数学公式
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            pedantic: false,
+            sanitize: false,
+            smartLists: true,
+            smartypants: false
+        });
+
+        // 创建一个自定义渲染器来处理数学公式
+        const renderer = new marked.Renderer();
+        const originalParagraph = renderer.paragraph.bind(renderer);
+        renderer.paragraph = (text) => {
+            return originalParagraph(text);
+        };
+        marked.setOptions({ renderer });
+    </script>
+
+    <!-- 自定义样式和脚本 -->
+    <link rel="stylesheet" href="static/styles.css">
+    <script src="static/script.js" defer></script>
+    
+</head>
+
+<body>
+    <!-- 添加固定的切换按钮 -->
+    <button class="toggle-button" onclick="toggleSidebar()">≡</button>
+
+    <!-- 搜索框 -->
+    <div class="search-container" id="searchContainer">
+        <input type="text" id="searchInput" placeholder="搜索...">
+        <button onclick="performSearch()">🔍</button>
+        <button onclick="closeSearch()">✕</button>
+    </div>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button onclick="showSearch()">🔍</button>
+            <button onclick="startNewChat()">+</button>
+        </div>
+        <div class="sidebar-content" id="chatHistory"></div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content" id="mainContent">
+        <div class="content-wrapper">
+            <div class="chat-container">
+                <div id="chatBox" class="chat-box"></div>
+            </div>
+            <div class="input-area">
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <textarea id="userInput" placeholder="输入问题... (Shift + Enter 换行，Enter 发送)" rows="1"></textarea>
+                    <button id="sendButton" class="send-button">
+                        <span class="button-icon">▶</span>
+                    </button>
+                </div>
+                <div class="hint">提示：使用 Shift + Enter 换行，Enter 发送</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

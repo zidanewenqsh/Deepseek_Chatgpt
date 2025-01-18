@@ -1,0 +1,1007 @@
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #3498db;
+    --background-color: #f8f9fa;
+    --sidebar-color: #2c3e50;
+    --text-color: #2c3e50;
+    --border-color: #e9ecef;
+    --hover-color: #3498db;
+    --message-user-bg: #e3f2fd;
+    --message-ai-bg: #e8f5e9;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: var(--text-color);
+    background: var(--background-color);
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background: var(--sidebar-color);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    flex-shrink: 0;
+    /* 防止侧边栏被压缩 */
+    transition: transform 0.3s ease;
+    /* 添加过渡效果 */
+}
+
+.sidebar.hidden {
+    transform: translateX(-100%);
+    /* 使用 transform 而不是 width 来隐藏 */
+}
+
+.sidebar-header {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 8px;
+    background: var(--sidebar-color);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    height: calc(100vh - 70px);
+    /* 减去头部高度 */
+}
+
+.chat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.chat-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+/* 主内容区样式 */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    margin-left: 280px;
+    /* 默认状态下与侧边栏宽度对应 */
+    transition: margin-left 0.3s ease;
+    /* 添加过渡效果 */
+}
+
+.main-content.with-sidebar {
+    margin-left: 280px;
+}
+
+/* 当侧边栏隐藏时的主内容区样式 */
+.main-content.sidebar-hidden {
+    margin-left: 0;
+    /* 侧边栏隐藏时取消左边距 */
+}
+
+/* 内容区域容器 */
+.content-wrapper {
+    max-width: 2000px;
+    /* 从1600px增加到2000px */
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 90px;
+}
+
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    margin-bottom: 120px;
+    /* 为输入区域留出空间 */
+}
+
+.chat-box {
+    flex: 1;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: var(--background-color);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 固定输入框区域 */
+.input-area {
+    position: fixed;
+    bottom: 0;
+    left: 280px;
+    /* 默认状态下与侧边栏宽度对应 */
+    right: 0;
+    padding: 20px;
+    background: white;
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    transition: left 0.3s ease;
+    /* 添加过渡效果 */
+}
+
+/* 当侧边栏隐藏时的输入区域样式 */
+.sidebar-hidden .input-area {
+    left: 0;
+    /* 侧边栏隐藏时输入框左边界从0开始 */
+}
+
+#userInput {
+    flex: 1;
+    height: 45px;
+    /* 初始一行高度 */
+    min-height: 45px;
+    /* 最小一行高度 */
+    max-height: 450px;
+    /* 最大10行高度 (45px * 10) */
+    padding: 12px 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.5;
+    resize: none;
+    overflow-y: auto;
+}
+
+#userInput:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent-color);
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+.sidebar button {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+}
+
+.sidebar button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.markdown-body {
+    padding: 8px;
+    line-height: 1.2;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    font-size: 20px;
+}
+
+/* Markdown 列表样式 */
+.markdown-body ul,
+.markdown-body ol {
+    padding-left: 1.5em;
+    /* 缩进距离 */
+    margin: 0em 0;
+    /* 上下间距 */
+}
+
+.markdown-body ul li,
+.markdown-body ol li {
+    margin: 0em 0;
+    /* 列表项之间的间距 */
+    line-height: 1.2;
+    /* 列表项的行高 */
+}
+
+/* 无序列表的符号样式 */
+.markdown-body ul {
+    list-style-type: disc;
+    /* 实心圆点 */
+}
+
+/* 有序列表的数字样式 */
+.markdown-body ol {
+    list-style-type: decimal;
+    /* 数字样式 */
+}
+
+.markdown-body p {
+    margin: 0em 0;
+}
+
+/* .markdown-body pre {
+    background-color: #f8f9fa;
+    padding: 6px;
+    border-radius: 8px;
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    margin: 0.5em 0;
+} */
+
+/* Markdown 表格样式 */
+.markdown-body table {
+    border-collapse: collapse;
+    /* 合并边框 */
+    width: 100%;
+    /* 表格宽度为100% */
+    margin: 1em 0;
+    /* 上下间距 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* 添加阴影效果 */
+    border-radius: 8px;
+    /* 圆角 */
+    overflow: hidden;
+    /* 确保圆角效果 */
+}
+
+.markdown-body th,
+.markdown-body td {
+    border: 1px solid #ddd;
+    /* 单元格边框 */
+    padding: 12px;
+    /* 单元格内边距 */
+    text-align: left;
+    /* 左对齐文本 */
+}
+
+.markdown-body th {
+    background: #3498db;
+    /* 表头背景色 */
+    color: white;
+    /* 表头文字颜色 */
+    font-weight: bold;
+    /* 表头加粗 */
+}
+
+.markdown-body tr:nth-child(even) {
+    background: #f2f2f2;
+    /* 偶数行背景色 */
+}
+
+.markdown-body tr:hover {
+    background: #e9ecef;
+    /* 鼠标悬停时的背景色 */
+}
+
+.markdown-body tr {
+    transition: background 0.3s;
+    /* 添加过渡效果 */
+}
+
+/* 代码块样式 */
+.markdown-body pre {
+    margin: 0.5em 0;
+    padding: 0.5em;
+    border-radius: 6px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    overflow: auto;
+    position: relative;
+    padding-top: 1.8em;
+}
+
+.markdown-body code {
+    background-color: #f8f9fa;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    border: 1px solid var(--border-color);
+    white-space: pre;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    max-width: 1600px;
+    /* 从800px增加到1200px */
+    position: relative;
+    line-height: 1.5;
+    word-wrap: break-word;
+    white-space: normal;
+    font-size: 20px;
+    /* 固定字体大小 */
+}
+
+.message.user {
+    background: var(--message-user-bg);
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+    width: fit-content;
+    min-width: 200px;
+}
+
+.message.assistant {
+    background: var(--message-ai-bg);
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    width: fit-content;
+    min-width: 200px;
+}
+
+/* 消息标题栏样式 */
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: -1px;
+}
+
+/* 用户消息标题栏 */
+.message.user .message-header {
+    background: #d4e9fc;
+    border: 1px solid #c7e2fb;
+}
+
+/* AI消息标题栏 */
+.message.assistant .message-header {
+    background: #dcf1dd;
+    border: 1px solid #cfebd0;
+}
+
+/* 调整消息内容样式 */
+.message-content {
+    padding: 12px 16px;
+    border-radius: 0 0 10px 10px;
+}
+
+/* 用户消息内容 */
+.message.user .message-content {
+    background: var(--message-user-bg);
+}
+
+/* AI消息内容 */
+.message.assistant .message-content {
+    background: var(--message-ai-bg);
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* 修改搜索框样式 */
+.search-container {
+    position: fixed;
+    top: 10px;
+    left: 60px;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-container.active {
+    display: flex;
+}
+
+.search-container input {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    width: 200px;
+}
+
+.search-container button {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background: var(--accent-color);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.search-container button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+/* 添加停止图标样式 */
+
+.stop-icon {
+
+    width: 12px;
+
+    height: 12px;
+
+    background: white;
+
+    border-radius: 2px;
+
+}
+
+/* 添加发送图标样式 */
+.send-icon {
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 14px solid white;
+    margin-left: 4px;
+}
+
+/* 禁用状态样式 */
+.send-button:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 修改侧边栏头部按钮样式 */
+.sidebar-header {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.sidebar-header button {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-header button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+/* 添加固定的切换按钮样式 */
+.toggle-button {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 1000;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.toggle-button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+/* 搜索高亮样式 */
+.highlight {
+    background-color: yellow;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+/* 添加当前对话的样式 */
+.chat-item.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.chat-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 10px;
+}
+
+.delete-btn {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    background: transparent;
+    border: none;
+    color: #ff4d4f;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.chat-item:hover .delete-btn {
+    opacity: 1;
+}
+
+.delete-btn:hover {
+    background: rgba(255, 59, 48, 0.2);
+}
+
+/* 美化滚动条 */
+.sidebar-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 行内公式样式 */
+.mjx-math {
+    font-size: 90% !important;
+}
+
+/* 行间公式样式 */
+mjx-container[jax="SVG"][display="true"] {
+    font-size: 90% !important;
+    margin: 0.5em 0 !important;
+    text-align: center;
+}
+
+/* 确保公式容器不会溢出 */
+mjx-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+}
+
+/* 调整公式与文本的对齐 */
+mjx-container:not([display="true"]) {
+    vertical-align: middle;
+}
+
+/* 特别处理行内公式的大小 */
+.message mjx-container:not([display="true"]) {
+    font-size: 80% !important;
+}
+
+/* 调整 KaTeX 样式 */
+.katex {
+    font-size: 1em !important;
+}
+
+.katex-display {
+    margin: 0.5em 0 !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.katex-display>.katex {
+    white-space: normal;
+}
+
+/* 处理长公式 */
+.katex-display>.katex>.katex-html {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+/* 当侧边栏显示时调整输入框位置 */
+.main-content.with-sidebar .input-area {
+    left: calc(50% + 140px);
+}
+
+/* 添加提示文本样式 */
+.hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    padding-left: 20px;
+}
+
+/* 添加发送按钮样式 */
+.send-button {
+    width: 45px;
+    /* 与输入框高度一致 */
+    height: 45px;
+    /* 与输入框高度一致 */
+    border: none;
+    border-radius: 8px;
+    background: var(--accent-color);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    /* 添加这行以改善文字垂直对齐 */
+    padding: 0;
+    /* 移除内边距以确保完全居中 */
+}
+
+.button-icon {
+    font-size: 24px;
+    display: flex;
+    /* 添加这行 */
+    align-items: center;
+    /* 添加这行 */
+    justify-content: center;
+    /* 添加这行 */
+    width: 100%;
+    /* 添加这行 */
+    height: 100%;
+    /* 添加这行 */
+    transition: all 0.3s ease;
+}
+
+
+/* 代码块标题栏样式 */
+.code-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1.3em;
+    background: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 0.9em;
+    color: #495057;
+    border-radius: 5px 5px 0 0;
+}
+
+/* 语言标题样式 */
+.code-language {
+    font-family: 'Consolas', monospace;
+    font-size: 0.9em;
+    color: #495057;
+}
+
+/* 复制按钮样式 */
+.copy-button {
+    position: absolute;
+    /* 绝对定位 */
+    top: 10px;
+    /* 距离顶部10px */
+    right: 10px;
+    /* 距离右侧10px */
+    background: rgba(52, 152, 219, 0.8);
+    /* 按钮背景色 */
+    color: white;
+    /* 按钮文字颜色 */
+    border: none;
+    /* 无边框 */
+    border-radius: 4px;
+    /* 圆角 */
+    padding: 5px 10px;
+    /* 内边距 */
+    cursor: pointer;
+    /* 鼠标指针样式 */
+    font-size: 0.9em;
+    /* 字体大小 */
+    transition: background 0.3s;
+    /* 添加过渡效果 */
+}
+
+.copy-button:hover {
+    color: var(--accent-color);
+}
+
+/* 复制成功提示样式 */
+.copy-button.copied {
+    color: #28a745;
+}
+
+/* 代码块基础样式 - GitHub 风格的浅灰色背景
+ * 用于所有代码块的背景色和基本文本颜色
+ * 包括行内代码和多行代码块
+ */
+.hljs {
+    background: #f6f8fa !important;
+    color: #24292e !important;
+}
+
+/* 关键字 - GitHub 风格的红色
+ * 用于语言关键字和控制流语句
+ * 例如: if, else, return, class, import
+ */
+.hljs-keyword {
+    color: #d73a49 !important;
+}
+
+/* 字符串 - GitHub 风格的蓝色
+ * 用于字符串字面量
+ * 例如: "hello", 'world', `template`
+ */
+.hljs-string {
+    color: #032f62 !important;
+}
+
+/* 注释 - GitHub 风格的灰色
+ * 用于单行和多行注释
+ * 例如: // 注释, /* 多行注释 */
+*/ .hljs-comment {
+    color: #57606a !important;
+    font-style: italic !important;
+}
+
+
+/* 变量名 - GitHub 风格的深色
+ * 用于变量引用和声明
+ * 例如: myVariable, counter, i
+ */
+.hljs-variable {
+    color: #24292e !important;
+}
+
+/* 运算符 - GitHub 风格的深色
+ * 用于算术、逻辑和其他运算符
+ * 例如: +, -, *, /, =, ==, !=, &&
+ */
+.hljs-operator {
+    color: #24292e !important;
+}
+
+/* 标点符号 - GitHub 风格的深色
+ * 用于分隔符和标点
+ * 例如: (, ), {, }, [, ], ;, :
+ */
+.hljs-punctuation {
+    color: #24292e !important;
+}
+
+/* 正则表达式 - GitHub 风格的蓝色
+ * 用于正则表达式字面量
+ * 例如: /\w+/, /[a-z]+/gi
+ */
+.hljs-regexp {
+    color: #032f62 !important;
+}
+
+/* 属性名 - GitHub 风格的深蓝色
+ * 用于对象属性和HTML属性
+ * 例如: object.property, <div class="...">
+ */
+.hljs-attr {
+    color: #005cc5 !important;
+}
+
+/* HTML/XML标签 - GitHub 风格的绿色
+ * 用于标记语言的标签
+ * 例如: <div>, <span>, <p>
+ */
+.hljs-tag {
+    color: #22863a !important;
+}
+
+/* 函数参数 - GitHub 风格的深色
+ * 用于函数参数列表中的参数名
+ * 例如: function(param1, param2)
+ */
+.hljs-params {
+    color: #24292e !important;
+}
+
+/* 文档标记 - GitHub 风格的灰色
+ * 用于文档注释中的特殊标记
+ * 例如: @param, @return, @throws
+ */
+.hljs-doctag {
+    color: #6a737d !important;
+    font-style: italic !important;
+}
+
+/* 元信息 - GitHub 风格的蓝色
+ * 用于预处理指令和元数据标记
+ * 例如: #include, #define, @decorator
+ */
+.hljs-meta {
+    color: #005cc5 !important;
+}
+
+/* 函数相关样式 - GitHub风格的紫色
+ * 用于函数声明和定义的整体样式
+ * 例如: function myFunction(), def my_function():
+ */
+.hljs-function {
+    color: #8250df !important;
+}
+
+/* 标题/名称样式 - GitHub风格的紫色
+ * 用于各种标识符的名称
+ * 包括函数名、类名等
+ */
+.hljs-title {
+    color: #8250df !important;
+}
+
+/* 类名样式 - GitHub风格的紫色
+ * 专门用于类的声明和定义
+ * 例如: class MyClass, class Solution
+ */
+.hljs-title.class_ {
+    color: #8250df !important;
+}
+
+/* 类型声明样式 - GitHub风格的红色
+ * 用于类型声明和类型注解
+ * 例如: int, string, boolean, void
+ */
+.hljs-type {
+    color: #cf222e !important;
+}
+
+
+/* 行内代码样式保持不变 */
+#preview :not(pre)>code {
+    background: #f6f8fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #e83e8c;
+}
+
+/* 表格样式 */
+#preview table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+#preview th,
+#preview td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#preview th {
+    background: #f8f9fa;
+}
+
+
+/* 函数名称 - 使用 GitHub 风格的深紫色
+ * 用于函数声明和调用时的函数名
+ * 例如: function calculate(), myFunction() 
+ */
+.hljs-title.function_ {
+    color: #6f42c1 !important;
+}
+
+/* 函数名称（另一种选择器）- 保持与上面相同的深紫色
+ * 用于确保不同语言中的函数名都能正确显示
+ * 例如: def my_function():, void myFunction() 
+ */
+.hljs-function .hljs-title {
+    color: #6f42c1 !important;
+}
+
+/* 类型名称 - GitHub 风格的红色
+ * 用于类型声明和类型注解
+ * 例如: int, string, void, Vector<T> 
+ */
+.hljs-type {
+    color: #d73a49 !important;
+}
+
+/* 内置类型/函数 - GitHub 风格的红色
+ * 用于语言内置的类型和函数
+ * 例如: string, int32, len(), sizeof() 
+ */
+.hljs-built_in {
+    color: #d73a49 !important;
+}
+
+/* 数字字面量 - GitHub 风格的深蓝色
+ * 用于所有数字常量
+ * 例如: 42, 3.14, 0xFF 
+ */
+.hljs-number {
+    color: #005cc5 !important;
+}
+
+/* 字符串插值中的表达式 - 深灰色
+ * 用于字符串模板中的变量和表达式
+ * 例如: `${variable}`, f"{value}" 
+ */
+.hljs-subst {
+    color: #24292e !important;
+}
+
+/* 模板变量 - 深灰色
+ * 用于各种模板语言中的变量
+ * 例如: ${variable}, #{variable}, @{variable} 
+ */
+.hljs-template-variable {
+    color: #24292e !important;
+}
+
+/* 行内代码样式
+.markdown-body :not(pre) > code {
+    background: #f6f8fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #e83e8c;
+    border: 1px solid #e9ecef;
+} */
