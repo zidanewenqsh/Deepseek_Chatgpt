@@ -1,4 +1,4 @@
-const API_KEY = 'sk-xxxxxx';  // 直接指定API密钥
+const API_KEY = 'sk-e7e4505fa57c4316b50bbb9784a454de';  // 直接指定API密钥
 const BASE_URL = 'https://api.deepseek.com';
 
 marked.setOptions({
@@ -136,6 +136,8 @@ async function sendMessage() {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
 
+        messages.push({ "role": "assistant", "content": "" });
+
         while (true) {
             const { value, done } = await reader.read();
             if (done) break;
@@ -202,12 +204,13 @@ async function sendMessage() {
                     }
                 }
             }
+
+            // 更新最后一条消息的内容
+            messages[messages.length - 1].content = fullResponse;
         }
 
-        messages.push({ "role": "assistant", "content": fullResponse });
-
         if (isNewChat) {
-            saveToLocalStorage(userInput, fullResponse, [...messages]);
+            saveToLocalStorage(text, fullResponse, [...messages]);
             isNewChat = false;
         } else if (currentChatIndex !== null) {
             // 更新现有对话
@@ -226,8 +229,8 @@ async function sendMessage() {
             appendMessage('system', '发生错误，请重试');
         }
     } finally {
-        resetSendButton();  // 重置按钮状态
-        controller = null;  // 清空 controller
+        resetSendButton();
+        controller = null;
     }
 }
 

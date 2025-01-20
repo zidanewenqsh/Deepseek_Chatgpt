@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>AI Chat</title>
-    <!-- 添加 KaTeX CSS -->
+    <title>{{ title }} - AI Chat</title>
+    <!-- KaTeX 相关 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <!-- 添加 KaTeX JS -->
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <!-- 添加 auto-render 扩展，用于自动渲染页面中的数学公式 -->
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- 添加 highlight.js CSS -->
+    
+    <!-- highlight.js 相关 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/vs2015.min.css">
-
-    <!-- 添加 highlight.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-    <!-- 添加常用语言包 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/cpp.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
 
+    <!-- 自定义脚本配置 -->
     <script>
         // 添加在其他脚本的最前面
         // 阻止浏览器默认的 Ctrl + 滚轮缩放行为
@@ -50,13 +46,10 @@
     </script>
 
     <!-- 自定义样式和脚本 -->
-    <link rel="stylesheet" href="static/styles.css">
-    <script src="static/script.js" defer></script>
-    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-
 <body>
-    <!-- 添加固定的切换按钮 -->
+    <!-- 切换按钮 -->
     <button class="toggle-button" onclick="toggleSidebar()">≡</button>
 
     <!-- 搜索框 -->
@@ -77,22 +70,8 @@
 
     <!-- 主内容区 -->
     <div class="main-content" id="mainContent">
-        <div class="content-wrapper">
-            <div class="chat-container">
-                <div id="chatBox" class="chat-box"></div>
-            </div>
-            <div class="input-area">
-                <div style="display: flex; gap: 10px; align-items: flex-start;">
-                    <textarea id="userInput" placeholder="输入问题... (Shift + Enter 换行，Enter 发送)" rows="1"></textarea>
-                    <button id="sendButton" class="send-button">
-                        <span class="button-icon">▶</span>
-                    </button>
-                </div>
-                <div class="hint">提示：使用 Shift + Enter 换行，Enter 发送</div>
-            </div>
-        </div>
+        {% block content %}{% endblock %}
     </div>
-
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
 </body>
-
 </html>
