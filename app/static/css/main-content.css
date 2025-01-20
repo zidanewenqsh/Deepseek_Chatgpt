@@ -1,0 +1,47 @@
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    margin-left: 280px;
+    transition: margin-left 0.3s ease;
+}
+
+.main-content.with-sidebar {
+    margin-left: 280px;
+}
+
+.main-content.sidebar-hidden {
+    margin-left: 0;
+}
+
+.content-wrapper {
+    max-width: 2000px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 90px;
+}
+
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    margin-bottom: 120px;
+}
+
+.chat-box {
+    flex: 1;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background: var(--background-color);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+} 
