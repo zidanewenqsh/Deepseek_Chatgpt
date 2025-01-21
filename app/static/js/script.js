@@ -1,4 +1,4 @@
-const API_KEY = 'sk-e7e4505fa57c4316b50bbb9784a454de';  // 直接指定API密钥
+const API_KEY = 'sk-xxxxxx';  // 直接指定API密钥
 const BASE_URL = 'https://api.deepseek.com';
 
 marked.setOptions({

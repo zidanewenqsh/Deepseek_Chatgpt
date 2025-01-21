@@ -80,6 +80,6 @@
     <div class="main-content" id="mainContent">
         {% block content %}{% endblock %}
     </div>
-    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

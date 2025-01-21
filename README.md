@@ -9,13 +9,12 @@
 - **Markdown 支持**：AI 的回答支持 Markdown 格式，便于展示代码、列表和数学公式
 - **历史记录**：用户的聊天记录将被保存，方便后续查看
 - **搜索功能**：用户可以在历史记录中搜索特定的对话内容
-- **代码高亮**：支持多种编程语言的代码高亮显示
-- **数学公式**：支持 LaTeX 格式的数学公式渲染
+- **代码高亮**：支持多种编程语言的代码高亮显示（包括 Python、JavaScript、Java、C++ 等）
+- **数学公式**：支持 KaTeX 格式的数学公式渲染
 - **复制功能**：支持一键复制对话内容和代码块
 - **快捷键支持**：
   - Enter：发送消息
   - Shift + Enter：换行
-  - Ctrl + Enter：强制发送
 
 ## 界面特性
 - **响应式设计**：适配不同屏幕尺寸
@@ -32,16 +31,42 @@
 ## 技术栈
 ### 后端
 - Flask：Web 框架
-- Flask-CORS：跨域资源共享支持
+- OpenAI：API 客户端
 - Python-Dotenv：环境变量管理
-- Requests：HTTP 请求处理
 
 ### 前端
 - HTML5 + CSS3：页面结构和样式
-- JavaScript：交互逻辑
+- JavaScript（模块化）：交互逻辑
 - marked.js：Markdown 渲染
 - highlight.js：代码高亮
 - KaTeX：数学公式渲染
+
+## 项目结构
+
+app/
+├── init.py # Flask 应用初始化
+├── routes.py # 路由处理
+├── static/ # 静态资源目录
+│ ├── css/ # 样式文件
+│ │ ├── base.css # 基础样式
+│ │ ├── code.css # 代码块样式
+│ │ ├── input-area.css # 输入区域样式
+│ │ ├── main-content.css # 主内容区样式
+│ │ ├── markdown.css # Markdown 渲染样式
+│ │ ├── message.css # 消息气泡样式
+│ │ ├── sidebar.css # 侧边栏样式
+│ │ └── utilities.css # 工具类样式
+│ └── js/ # JavaScript 模块
+│ ├── chat.js # 聊天核心功能
+│ ├── config.js # 配置文件
+│ ├── main.js # 主入口文件
+│ ├── search.js # 搜索功能
+│ ├── state.js # 状态管理
+│ ├── storage.js # 本地存储
+│ └── ui.js # UI 交互
+└── templates/ # HTML 模板
+├── base.html # 基础模板
+└── index.html # 主页模板
 
 ## 环境配置
 1. 克隆项目：
@@ -65,7 +90,6 @@
    在项目根目录下创建一个 `.env` 文件，并添加以下内容：
    ```env
    DEEPSEEK_API_KEY=your_api_key_here  # 请填写您自己的 API 密钥
-   BASE_URL=https://api.deepseek.com
    ```
 
 ## 启动项目
@@ -94,7 +118,6 @@
 - 使用 ``` 包裹代码块，可指定语言
 - 使用 $ 包裹行内数学公式
 - 使用 $$ 包裹块级数学公式
-
 
 ## 许可证
 本项目采用 MIT 许可证，详情请查看 [LICENSE](LICENSE) 文件。
